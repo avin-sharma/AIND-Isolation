@@ -368,10 +368,12 @@ class AlphaBetaPlayer(IsolationPlayer):
         best_move = (-1, -1)
 
         for move in game.get_legal_moves():
-            v = max(best_score, self.min_value(game.forecast_move(move), depth, 1, alpha, beta))
+            child = self.min_value(game.forecast_move(move), depth, 1, alpha, beta)
+            v = max(best_score, child)
             if v > best_score:
                 best_score = v
                 best_move = move
+            alpha = max(alpha, v)
         return best_move
 
     def min_value(self, game, depth, r_depth, alpha, beta):
@@ -382,17 +384,20 @@ class AlphaBetaPlayer(IsolationPlayer):
         if not game.get_legal_moves():
             return float("inf")
 
-        # to check depth with recursion depth
+        # To check depth with recursion depth
         if r_depth == depth:
             score = self.score(game, game.inactive_player)
             return score
 
         v = float("inf")
         for b in game.get_legal_moves():
-            v = min(v, self.max_value(game.forecast_move(b), depth, r_depth+1, alpha, beta))
-            if v < alpha:
+            child = self.max_value(game.forecast_move(b), depth, r_depth + 1, alpha, beta)
+            v = min(v, child)
+            if v <= alpha:
                 return v
             beta = min(beta, v)
+        # Returning v for when all nodes are parsed and none are pruned
+        return v
 
     def max_value(self, game, depth, r_depth, alpha, beta):
         if self.time_left() < self.TIMER_THRESHOLD:
@@ -409,7 +414,10 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         v = float("-inf")
         for b in game.get_legal_moves():
-            v = max(v, self.min_value(game.forecast_move(b), depth, r_depth+1, alpha, beta))
-            if v > beta:
+            child = self.min_value(game.forecast_move(b), depth, r_depth + 1, alpha, beta)
+            v = max(v, child)
+            if v >= beta:
                 return v
             alpha = max(alpha, v)
+        # Returning v for when all nodes are parsed and none are pruned
+        return v

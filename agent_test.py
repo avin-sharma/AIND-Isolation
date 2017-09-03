@@ -18,7 +18,7 @@ class IsolationTest(unittest.TestCase):
     def setUp(self):
         reload(game_agent)
         self.player1 = game_agent.MinimaxPlayer(1)
-        self.player2 = "Player2"
+        self.player2 = game_agent.AlphaBetaPlayer()
         self.game = isolation.Board(self.player1, self.player2, 5, 5)
 
     def test_minimax(self):
@@ -32,6 +32,18 @@ class IsolationTest(unittest.TestCase):
         self.game.to_string()
         self.player1.time_left = time_left
         self.assertEqual(self.player1.minimax(self.game, 7), (2, 2))
+
+    def test_alphabeta(self):
+
+        time_limit = 150000
+        time_millis = lambda: 1000 * timeit.default_timer()
+        move_start = time_millis()
+        time_left = lambda: time_limit - (time_millis() - move_start)
+        # self.game.apply_move((2,2))
+        # self.game.apply_move((0, 2))
+        self.game.to_string()
+        self.player2.time_left = time_left
+        self.assertEqual(self.player2.alphabeta(self.game, 7), (2, 2))
 
 
 if __name__ == '__main__':
