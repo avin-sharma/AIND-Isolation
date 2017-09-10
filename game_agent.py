@@ -60,8 +60,7 @@ def custom_score_2(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
+    return float(len(game.get_legal_moves(player))) - float(len(game.get_legal_moves(game.get_opponent(player))))
 
 
 def custom_score_3(game, player):
@@ -86,8 +85,13 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    # TODO: finish this function!
-    raise NotImplementedError
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    return float(len(game.get_legal_moves(player))) - float(2*len(game.get_legal_moves(game.get_opponent(player))))
 
 
 class IsolationPlayer:
@@ -157,7 +161,8 @@ class MinimaxPlayer(IsolationPlayer):
 
         # Initialize the best move so that this function returns something
         # in case the search fails due to timeout
-        best_move = (-1, -1)
+
+        best_move = game.get_legal_moves()[0]
 
         try:
             # The try/except block will automatically catch the exception
@@ -311,6 +316,8 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         except SearchTimeout:
             # Handle any actions required after timeout as needed
+            if best_move == (-1, -1) and game.get_legal_moves():
+                best_move = game.get_legal_moves()[0]
             return best_move
 
         # Return the best move from the last completed search iteration
