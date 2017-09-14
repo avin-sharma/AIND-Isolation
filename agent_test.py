@@ -17,8 +17,8 @@ class IsolationTest(unittest.TestCase):
 
     def setUp(self):
         reload(game_agent)
-        self.player1 = game_agent.AlphaBetaPlayer(score_fn=game_agent.custom_score_2)
-        self.player2 = game_agent.AlphaBetaPlayer(score_fn=game_agent.custom_score_3)
+        self.player1 = game_agent.AlphaBetaPlayer(score_fn=game_agent.custom_score)
+        self.player2 = game_agent.AlphaBetaPlayer(score_fn=game_agent.custom_score_2)
         self.game = isolation.Board(self.player1, self.player2)
 
     # def test_minimax(self):
@@ -46,12 +46,17 @@ class IsolationTest(unittest.TestCase):
     #     self.assertEqual(self.player2.alphabeta(self.game, 7), (2, 2))
 
     def test_play(self):
+        """
+
+        :return: Nothing, but we print all moves and the winner
+        """
         player, moves, comment = self.game.play(150)
         if player == self.player1:
             print("Winner: Player 1")
         else:
             print("Winner: Player 2")
         print("All Moves: {}\n Comment: {}".format(moves, comment))
+
 
 if __name__ == '__main__':
     unittest.main()
